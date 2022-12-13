@@ -4,6 +4,7 @@ using System.Text;
 using JwtWebApi.JwtCode;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using JwtWebApi.Services.UserServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,8 @@ builder.Services.AddAuthentication(
         };
 
     });
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserServices, UserServices>();
 
 var app = builder.Build();
 

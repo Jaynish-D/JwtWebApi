@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\JwtWebApi.Data\JwtWebApi.Data.csproj" />
     <ProjectReference Include="..\JwtWebApi.JwtCode\JwtWebApi.JwtCode.csproj" />
+    <ProjectReference Include="..\JwtWebApi.Services\JwtWebApi.Services.csproj" />
   </ItemGroup>
 
 </Project>

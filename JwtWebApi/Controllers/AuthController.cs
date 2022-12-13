@@ -1,8 +1,8 @@
 ﻿using JwtWebApi.Data.Models;
 using JwtWebApi.JwtCode;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using JwtWebApi.Services.UserServices;
 namespace JwtWebApi.Controllers
 {
     [Route("api/[controller]")]
@@ -10,18 +10,30 @@ namespace JwtWebApi.Controllers
     public class AuthController : ControllerBase
     {
         public static User user = new();
-        public PassWordHash PasswordHashClass = new();
 
+        private readonly IUserServices _userServices;
+       
+        public AuthController(IUserServices userServices)
+        {
+            _userServices = userServices;
+        }
 
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDto request)
         {
-            PasswordHashClass.CreatePasswordHash(request.Password,out byte[] passwordHash,out byte[] passwordSalt);
+            PassWordHash.CreatePasswordHash(request.Password,out byte[] passwordHash,out byte[] passwordSalt);
             user.Username= request.Username;
             user.PasswordHash= passwordHash;
             user.PasswordSalt= passwordSalt;
             //PasswordHash.inituser(user);
             return Ok(user);
+        }
+
+        [HttpGet,Authorize]
+        public ActionResult<string> GetMe()
+        {
+            var userName = _userServices.GatMyName();
+            return Ok(userName);
         }
 
         [HttpPost("login")]
@@ -32,12 +44,12 @@ namespace JwtWebApi.Controllers
                 return BadRequest("User Not Found.");
             }
 
-            var result = PasswordHashClass.VerifyPasswordHash(request.Password,user.PasswordHash,user.PasswordSalt);
+            var result = PassWordHash.VerifyPasswordHash(request.Password,user.PasswordHash,user.PasswordSalt);
             if(!result)
             {
                 return BadRequest("Wrong Password.");
             }
-            string token = PasswordHashClass.CreateToken(user);
+            string token = PassWordHash.CreateToken(user);
             return Ok(token);
         }
     }
