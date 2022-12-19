@@ -1,5 +1,6 @@
 using JwtWebApi.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using OnlineHotel.Repository.UnitOfWork2;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConn"));
 });
+
+builder.Services.AddScoped<IUnitofWork, UnitofWork>();
 
 var app = builder.Build();
 
