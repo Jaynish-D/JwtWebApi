@@ -25,7 +25,7 @@ namespace SuperHeroAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<List<SuperHero>>> Create(SuperHero hero)
         {
-            _uow.GenericRepository<SuperHero>().Add(hero);
+            await _uow.GenericRepository<SuperHero>().AddAsync(hero);
             _uow.Save();
             return Ok(_uow.GenericRepository<SuperHero>().GetAll().ToList());
         }
